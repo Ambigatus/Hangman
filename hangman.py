@@ -100,13 +100,17 @@ def update_gui():
 		else:
 			displayed_word += "_ "
 	word_label.config(text="Word: " + displayed_word)
-	guesses_left_label.config(text="Guesses left: " + str(max_guesses - len(set(guessed_letters) - set(word))))
+	guesses_left_label.config(text="Guesses left: " + str(max_guesses))
 	guess_entry.delete(0, tk.END)
 
 #Function for handle a guess
 def handle_guess():
     global max_guesses
     guess = guess_entry.get().lower()
+
+    if len(guess) != 1 or not guess.isalpha():
+        result_label.config(text="Please enter a single alphabetical letter!")
+        return
     if guess in guessed_letters:
         result_label.config(text="You already guessed that letter!")
     elif guess in word:
@@ -122,17 +126,19 @@ def handle_guess():
         max_guesses -= 1
         if max_guesses == 0:
             result_label.config(text="Sorry, but you lose. The word was " + word)
+            hangman_label.config(text=hangman_visuals[6 - max_guesses])
             guess_entry.config(state=tk.DISABLED)
+            update_gui()
         else:
             result_label.config(text="Incorrect! Try harder!")
-            hangman_label.config(text=hangman_visuals[7 - max_guesses])
+            hangman_label.config(text=hangman_visuals[6 - max_guesses])
             update_gui()
 
 guess_entry.bind("<Return>", lambda event: handle_guess())
 
 # Define the reset function
 def reset_game():
-	global word, guessed_letters
+	global word, guessed_letters, max_guesses
 	word = random.choice(words).lower()
 	guessed_letters = []
 	max_guesses = 6
