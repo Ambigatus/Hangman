@@ -117,6 +117,7 @@ def handle_guess():
         guessed_letters.append(guess)
         if all(letter.lower() in guessed_letters for letter in word):
             result_label.config(text="Congratulations, you won!")
+            update_gui()
             guess_entry.config(state=tk.DISABLED)
         else:
             result_label.config(text="Correct!")
